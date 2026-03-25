@@ -2,6 +2,12 @@
 C# for Grandchildren: educational console application
 */
 
+/*
+ввод шкалы сразу после температуры, например: 25 C или 77 F
+берем последний символ строки, проверяем, запоминаем и отбрасыаем
+убираем пробелы и парсим число
+*/
+
 using static System.Console;
 
 WriteTitle("Фаренгейт - Цельсий");
@@ -22,10 +28,14 @@ void Action()
     const double absoluteZeroC = -273.15;
     const double absoluteZeroF = -459.67;
 
-    double t = EnterDouble("Введите температуру: ");
-    string scale = EnterText("Введите шкалу (C/F): ");
+    bool success = TryParseTemperature(out double t, out char scale);
+    while(!success)
+    {
+        WriteLine("Ошибка в данных!");
+        success = TryParseTemperature(out t, out scale);
+    }
 
-    if(scale.ToLower() == "c")
+    if(scale == 'c')
     {
         if(t < absoluteZeroC)
         {
@@ -36,7 +46,7 @@ void Action()
         double f = t * 9 / 5 + 32;
         WriteLine($"{t} C => {f:F2} F");
     }
-    else if(scale.ToLower() == "f")
+    else if(scale == 'f')
     {
         if(t < absoluteZeroF) 
         {
@@ -46,10 +56,15 @@ void Action()
         double c = (t - 32) * 5 / 9;
         WriteLine($"{t} F => {c:F2} C");
     }
-    else
-    {
-        WriteLine("Некорректная шкала. Пожалуйста, введите C или F.");
-    }
+}
+
+bool TryParseTemperature(out double temperature, out char scale)
+{
+    string input = EnterText("Введите температуру и шкалу (например, 25C или 77 F): ");
+    scale = input.ToLower()[input.Length - 1];
+    string numberPart = input.Substring(0, input.Length - 1).Trim();
+    bool success = double.TryParse(numberPart, out temperature);
+    return success && (scale == 'c' || scale == 'f');   
 }
 
 void WriteTitle(string title)
