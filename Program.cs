@@ -19,7 +19,37 @@ ExitApp();
 
 void Action()
 {
+    const double absoluteZeroC = -273.15;
+    const double absoluteZeroF = -459.67;
 
+    double t = EnterDouble("Введите температуру: ");
+    string scale = EnterText("Введите шкалу (C/F): ");
+
+    if(scale.ToLower() == "c")
+    {
+        if(t < absoluteZeroC)
+        {
+            WriteLine($"Температура не может быть ниже абсолютного нуля ({absoluteZeroC} C).");
+            return;
+        }
+
+        double f = t * 9 / 5 + 32;
+        WriteLine($"{t} C => {f:F2} F");
+    }
+    else if(scale.ToLower() == "f")
+    {
+        if(t < absoluteZeroF) 
+        {
+            WriteLine($"Температура не может быть ниже абсолютного нуля ({absoluteZeroF} F).");
+            return;
+        }
+        double c = (t - 32) * 5 / 9;
+        WriteLine($"{t} F => {c:F2} C");
+    }
+    else
+    {
+        WriteLine("Некорректная шкала. Пожалуйста, введите C или F.");
+    }
 }
 
 void WriteTitle(string title)
